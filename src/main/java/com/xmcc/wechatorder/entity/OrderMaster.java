@@ -2,7 +2,10 @@ package com.xmcc.wechatorder.entity;
 
 import com.xmcc.wechatorder.common.OrderEnums;
 import com.xmcc.wechatorder.common.PayEnums;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.hibernate.annotations.DynamicUpdate;
 
 import javax.persistence.Entity;
@@ -14,6 +17,9 @@ import java.util.Date;
 @Entity
 @Data
 @DynamicUpdate
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 public class OrderMaster implements Serializable {
 
     /** 订单id. */
