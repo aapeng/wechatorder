@@ -30,10 +30,13 @@ public class ProductInfoServiceImpl implements ProductInfoService {
         if (productCategoryDtoList == null || productCategoryDtoList.size() == 0 ) {
             return resultResponse;
         }
-        List<Integer> categoryTypeList = productCategoryDtoList.stream().map(productCategoryDto -> productCategoryDto.getCategoryType()).collect(Collectors.toList());
+        List<Integer> categoryTypeList = productCategoryDtoList.stream()
+                .map(productCategoryDto -> productCategoryDto.getCategoryType())
+                .collect(Collectors.toList());
         List<ProductInfo> productInfoList = productInfoRepository.findByProductStatusAndCategoryTypeIn(ResultEnums.PRODUCT_UP.getCode(), categoryTypeList);
-        List<ProductCategoryDto> finalList = productCategoryDtoList.parallelStream().map(productCategoryDto -> {
-            productCategoryDto.setProductInfoDtoList(productInfoList.stream()
+        List<ProductCategoryDto> finalList = productCategoryDtoList.parallelStream()
+                .map(productCategoryDto -> {
+                    productCategoryDto.setProductInfoDtoList(productInfoList.stream()
                     .filter(productInfo -> productInfo.getCategoryType() == productCategoryDto.getCategoryType())
                     .map(productInfo -> ProductInfoDto.build(productInfo)).collect(Collectors.toList()));
             return productCategoryDto;
