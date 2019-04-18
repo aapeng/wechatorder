@@ -10,6 +10,7 @@ import com.xmcc.wechatorder.entity.OrderDetail;
 import com.xmcc.wechatorder.entity.OrderMaster;
 import com.xmcc.wechatorder.entity.ProductInfo;
 import com.xmcc.wechatorder.exception.CustomException;
+import com.xmcc.wechatorder.repository.OrderDetailRepository;
 import com.xmcc.wechatorder.repository.OrderMasterRepository;
 import com.xmcc.wechatorder.service.OrderDetailService;
 import com.xmcc.wechatorder.service.OrderMasterService;
@@ -36,6 +37,8 @@ public class OrderMasterServiceImpl implements OrderMasterService {
     private OrderDetailService orderDetailService;
     @Autowired
     private OrderMasterRepository orderMasterRepository;
+    @Autowired
+    private OrderDetailRepository orderDetailRepository;
 
     @Override
     @Transactional
@@ -88,7 +91,7 @@ public class OrderMasterServiceImpl implements OrderMasterService {
     }
 
     @Override
-    public ResultResponse findByOpenid(String openid,Integer page,Integer size){
+    public ResultResponse list(String openid,Integer page,Integer size){
         if (page == null) {
             page = 0;
         }
@@ -104,6 +107,33 @@ public class OrderMasterServiceImpl implements OrderMasterService {
                 .map(orderMaster -> OrderMasterDto2.build(orderMaster))
                 .collect(Collectors.toList());
         return ResultResponse.success(orderMasterDto2List);
+    }
+
+    @Override
+    public ResultResponse detail(String openid, String orderId) {
+        List<OrderDetail> orderDetailList = orderDetailRepository.findByOrderId(orderId);
+        OrderMaster orderMaster = orderMasterRepository.findByBuyerOpenidAndOrderId(openid, orderId);
+        if (orderMaster == null) {
+            return ResultResponse.fail(OrderEnums.ORDER_NOT_EXITS.getMsg());
+        }
+        OrderMasterDto2 orderMasterDto2 = OrderMasterDto2.build(orderMaster);
+        orderMasterDto2.setOrderDetailList(orderDetailList);
+        return ResultResponse.success(orderMasterDto2);
+    }
+
+    @Override
+    @Transactional
+    public ResultResponse cancel(String openid, String orderId) {
+        OrderMaster orderMaster = orderMasterRepository.findByBuyerOpenidAndOrderId(openid, orderId);
+        if (orderMaster == null) {
+            return ResultResponse.fail(OrderEnums.ORDER_NOT_EXITS.getMsg());
+        }
+        if (orderMaster.getOrderStatus() == OrderEnums.CANCEL.getCode() || orderMaster.getOrderStatus() == OrderEnums.FINSH.getCode()) {
+            return ResultResponse.fail(OrderEnums.FINSH_CANCEL.getMsg());
+        }
+        orderMaster.setOrderStatus(OrderEnums.CANCEL.getCode());
+        orderMasterRepository.save(orderMaster);
+        return ResultResponse.success(OrderEnums.CANCEL.getMsg());
     }
 
 }

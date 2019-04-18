@@ -10,4 +10,6 @@ public interface OrderMasterRepository extends JpaRepository<OrderMaster,String>
 
     @Query(value = "select om from OrderMaster as om where buyerOpenid = ?1 ")
     Page<OrderMaster> findByopenid(String openId, Pageable pageable);
+
+    OrderMaster findByBuyerOpenidAndOrderId(String openid,String orderId);
 }

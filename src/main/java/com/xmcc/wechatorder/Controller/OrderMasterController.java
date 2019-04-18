@@ -50,6 +50,18 @@ public class OrderMasterController {
     @GetMapping("/list")
     @ApiOperation(value = "订单列表接口", httpMethod = "GET", response = ResultResponse.class)
     public ResultResponse list(String openid,Integer page,Integer size){
-        return orderMasterService.findByOpenid(openid, page, size);
+        return orderMasterService.list(openid, page, size);
+    }
+
+    @GetMapping("/detail")
+    @ApiOperation(value = "订单详情接口", httpMethod = "GET", response = ResultResponse.class)
+    public ResultResponse detail(String openid,String orderId){
+        return orderMasterService.detail(openid,orderId);
+    }
+
+    @PostMapping("/cancel")
+    @ApiOperation(value = "取消接口", httpMethod = "POST", response = ResultResponse.class)
+    public ResultResponse cancel(String openid,String orderId){
+        return orderMasterService.cancel(openid,orderId);
     }
 }
