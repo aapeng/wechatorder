@@ -15,7 +15,7 @@ spring:
     show-sql: true  #显示sql语句
   jackson:
     date-format: yyyy-MM-dd HH:mm:ss  #日期格式化标准
-    default-property-inclusion: non_null  #返回json时 忽略null
+    #default-property-inclusion: non_null  #返回json时 忽略null
 
 #logging:
 #  pattern:

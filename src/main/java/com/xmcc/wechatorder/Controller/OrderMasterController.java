@@ -10,6 +10,7 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -23,16 +24,18 @@ import java.util.stream.Collectors;
 @RequestMapping("/buyer/order")
 @Api(value = "订单相关接口",description = "完成订单的增删改查")
 public class OrderMasterController {
+
    @Autowired
     private OrderMasterService orderMasterService;
-    @PostMapping("/create")
-    @ApiOperation(value = "创建订单接口", httpMethod = "POST", response = ResultResponse.class)
+
     /*
      * @Valid：配合DTO上的JSR303注解完成校验
      * BindingResult：配合@Valid，用于处理前台传入的参数信息
      * 注意：JSR303的注解默认是在Contorller层进行校验
      * 如果想在service层进行校验 需要使用javax.validation.Validator  也就是上个项目用到的工具
      */
+    @PostMapping("/create")
+    @ApiOperation(value = "创建订单接口", httpMethod = "POST", response = ResultResponse.class)
     public ResultResponse create(@Valid @ApiParam(name="订单对象",value = "传入json格式",required = true)
                     OrderMasterDto orderMasterDto, BindingResult bindingResult){
         if(bindingResult.hasErrors()){//判断参数是否有误
@@ -42,5 +45,11 @@ public class OrderMasterController {
             return ResultResponse.fail(map);//将参数校验的错误信息返回给前台
        }
         return orderMasterService.create(orderMasterDto);
+    }
+
+    @GetMapping("/list")
+    @ApiOperation(value = "订单列表接口", httpMethod = "GET", response = ResultResponse.class)
+    public ResultResponse list(String openid,Integer page,Integer size){
+        return orderMasterService.findByOpenid(openid, page, size);
     }
 }

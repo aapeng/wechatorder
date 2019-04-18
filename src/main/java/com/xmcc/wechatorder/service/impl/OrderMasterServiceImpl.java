@@ -5,6 +5,7 @@ import com.google.common.collect.Maps;
 import com.xmcc.wechatorder.common.*;
 import com.xmcc.wechatorder.dto.OrderDetailDto;
 import com.xmcc.wechatorder.dto.OrderMasterDto;
+import com.xmcc.wechatorder.dto.OrderMasterDto2;
 import com.xmcc.wechatorder.entity.OrderDetail;
 import com.xmcc.wechatorder.entity.OrderMaster;
 import com.xmcc.wechatorder.entity.ProductInfo;
@@ -15,7 +16,10 @@ import com.xmcc.wechatorder.service.OrderMasterService;
 import com.xmcc.wechatorder.service.ProductInfoService;
 import com.xmcc.wechatorder.util.BigDecimalUtil;
 import com.xmcc.wechatorder.util.IdUtil;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -83,4 +87,24 @@ public class OrderMasterServiceImpl implements OrderMasterService {
         map.put("orderId",orderId);
         return ResultResponse.success(map);
     }
+
+    @Override
+    public ResultResponse findByOpenid(String openid,Integer page,Integer size){
+        if (page == null) {
+            page = 0;
+        }
+        if (size == null) {
+            size = 10;
+        }
+        Page<OrderMaster> orderMasterPage = orderMasterRepository.findByopenid(openid, PageRequest.of(page, size));
+        List<OrderMaster> orderMasterList = orderMasterPage.get().collect(Collectors.toList());
+        if (orderMasterList.size() == 0 || orderMasterList == null) {
+            ResultResponse.fail(orderMasterList);
+        }
+        List<OrderMasterDto2> orderMasterDto2List = orderMasterPage.get()
+                .map(orderMaster -> OrderMasterDto2.build(orderMaster))
+                .collect(Collectors.toList());
+        return ResultResponse.success(orderMasterDto2List);
+    }
+
 }

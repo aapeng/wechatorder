@@ -6,4 +6,6 @@ import com.xmcc.wechatorder.dto.OrderMasterDto;
 public interface OrderMasterService {
 
     ResultResponse create(OrderMasterDto orderMasterDto);
+
+    ResultResponse findByOpenid(String openid,Integer page,Integer size);
 }
