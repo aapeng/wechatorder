@@ -17,6 +17,10 @@ spring:
     date-format: yyyy-MM-dd HH:mm:ss  #日期格式化标准
     #default-property-inclusion: non_null  #返回json时 忽略null
 
+wechat:
+  appid: wxcec0b9e65c084712
+  secret: 05a7e861c1985ced86af77fb8f7163bc
+
 #logging:
 #  pattern:
 #    console: "%d-%msg%n"
