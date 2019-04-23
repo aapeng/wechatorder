@@ -14,6 +14,7 @@ import com.xmcc.wechatorder.repository.OrderDetailRepository;
 import com.xmcc.wechatorder.repository.OrderMasterRepository;
 import com.xmcc.wechatorder.service.OrderDetailService;
 import com.xmcc.wechatorder.service.OrderMasterService;
+import com.xmcc.wechatorder.service.PayService;
 import com.xmcc.wechatorder.service.ProductInfoService;
 import com.xmcc.wechatorder.util.BigDecimalUtil;
 import com.xmcc.wechatorder.util.IdUtil;
@@ -39,6 +40,8 @@ public class OrderMasterServiceImpl implements OrderMasterService {
     private OrderMasterRepository orderMasterRepository;
     @Autowired
     private OrderDetailRepository orderDetailRepository;
+    @Autowired
+    private PayService payService;
 
     @Override
     @Transactional
@@ -133,6 +136,7 @@ public class OrderMasterServiceImpl implements OrderMasterService {
         }
         orderMaster.setOrderStatus(OrderEnums.CANCEL.getCode());
         orderMasterRepository.save(orderMaster);
+        payService.refund(orderMaster);//退款
         return ResultResponse.success(OrderEnums.CANCEL.getMsg());
     }
 

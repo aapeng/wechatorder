@@ -1,5 +1,5 @@
 package com.xmcc.wechatorder.common;
 
 public interface Constant {
-    String orderName="微信订单";
+    String ORDER_NAME = "微信公众账号支付订单";
 }
